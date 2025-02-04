@@ -55,16 +55,15 @@ type Aspect struct {
 
 // Relation - relate an aspect to a thing
 type Relation struct {
-	Origin  Uri       `json:"origin"`
 	Created Timestamp `json:"created"`
 	Aspect  Urn       `json:"aspect"`
 	Thing   Urn       `json:"thing"` // No Urn versioning supported
 }
 
-// Frame - list of aspects and frames, versioned as frames are stateful
+// Frame - list of aspects, versioned as frames are stateful
 type Frame struct {
 	Id      Identifiers `json:"id"`
-	Names   []Urn       `json:"names"` // aspect or frame Urn, support versioning on frames
+	Aspects []Urn       `json:"aspects"`
 	Version int         `json:"version"`
 }
 
