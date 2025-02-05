@@ -1,38 +1,17 @@
 package access
 
-import "github.com/advanced-go/collective/core"
+import (
+	"github.com/advanced-go/collective/core"
+	"net/url"
+)
 
 const (
 	PkgPath = "github/advanced-go/collective/access"
 )
 
-const (
-	AgentNID = "agent" // Restricted NID/Domain
-
-	ThingNSS    = "thing"    // urn:agent:thing.{module-package}:{type}
-	AspectNSS   = "aspect"   // urn:agent:aspect.testing-aspect
-	FrameNSS    = "frame"    // urn:agent:frame:testing-frame
-	RuleNSS     = "rule"     // urn:agent:rule:testing-rule
-	GuidanceNSS = "guidance" // urn:agent:guidance:testing-rule
-)
-
-// https://www.rfc-editor.org/rfc/rfc8141#section-2
-//   NSS           = pchar *(pchar / "/")
-
-// https://www.rfc-editor.org/rfc/rfc3986
-//  pchar         = unreserved / pct-encoded / sub-delims / ":" / "@"
-//  unreserved  = ALPHA / DIGIT / "-" / "." / "_" / "~"
-//  pct-encoded = "%" HEXDIG HEXDIG
-//  sub-delims  = "!" / "$" / "&" / "'" / "(" / ")"
-//                  / "*" / "+" / "," / ";" / "="
-//  assigned-name = "urn" ":" NID ":" NSS
-// Urn syntax : "urn" : NID : NSS
-// NID == Domain
-
-// Applications can create as many domains/NISD as needed
-// "agent" is the reserved domain for the agent collective supporting agent development
-
 type Urn string
+type Tags string
+type Resource string
 
 // IAppend - append to the collective
 // TODO: add tags for context and resemblance query support
@@ -95,21 +74,32 @@ var Retrieve = func() *IRetrieval {
 	}
 }()
 
-// IRetrieval1 -
+const (
+	RelationNone        = "none"
+	RelationDirect      = "direct"
+	RelationResemblance = "resemblance"
+)
+
+// IRelate -
 // TODO : Support type names??
 //
 //		Can we add name -> type agreement
 //		Can we doe some sort of heuristic check to see if the name resembles any existing type Urn??
 //	 Modified Urn for things to contain a path and resource, like a Url, and the resource name
 //	 of a Thing can now be verified against other aspects.
-type IRetrieval1 struct {
-	Things func(h core.ErrorHandler, urns []Urn) ([]ThingResponse, *core.Status)
+//
+// The thing of type supports
+// Resource - resource name
+// Urn    - thing name
+// Tags   - list of tag names
+type IRelate struct {
+	Relate func(h core.ErrorHandler, thing any, aspect Urn, values url.Values) (string, *core.Status)
 }
 
-var Retrieve1 = func() *IRetrieval1 {
-	return &IRetrieval1{
-		Things: func(h core.ErrorHandler, urns []Urn) ([]ThingResponse, *core.Status) {
-			return nil, core.StatusOK()
+var Retrieve1 = func() *IRelate {
+	return &IRelate{
+		Relate: func(h core.ErrorHandler, thing any, aspect Urn, values url.Values) (string, *core.Status) {
+			return RelationNone, core.StatusOK()
 		},
 	}
 }()
