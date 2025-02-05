@@ -12,6 +12,7 @@ const (
 type Urn string
 type Tags string
 type Resource string
+type Timestamp string
 
 // IAppend - append to the collective
 // TODO: add tags for context and resemblance query support
@@ -80,6 +81,19 @@ const (
 	RelationResemblance = "resemblance"
 )
 
+type ThingConstraints interface {
+	Urn | Resource | Tags | Timestamp
+}
+
+type FilterConstraints interface {
+	[]Urn | Timestamp
+}
+
+func Relate[T ThingConstraints, U FilterConstraints](h core.ErrorHandler, thing1, thing2 T, filter1, filter2 U, values url.Values) (string, Urn, *core.Status) {
+	return RelationNone, "", core.StatusOK()
+}
+
+/*
 // IRelate -
 // TODO : Support type names??
 //
@@ -90,7 +104,7 @@ const (
 //
 // The thing of type supports
 // Resource - resource name
-// Urn    - thing name
+// Urn    - thing or aspect name
 // Tags   - list of tag names
 type IRelate struct {
 	Relate func(h core.ErrorHandler, thing any, aspect Urn, values url.Values) (string, *core.Status)
@@ -103,3 +117,6 @@ var Retrieve1 = func() *IRelate {
 		},
 	}
 }()
+
+
+*/
