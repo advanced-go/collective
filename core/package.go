@@ -5,6 +5,9 @@ const (
 )
 
 // Refactoring is the evolutionary process applied to programming
+// We need a way to get the last component of a Urn, as the first n-1 components
+// are essentially locators, like the path + resource in a Url.
+// So, given Urn how do we get the resource name?
 
 type Urn string
 type Uri string
@@ -44,8 +47,9 @@ type Identifiers struct {
 
 // Thing - something named in the real world, versioned as things can be stateful
 type Thing struct {
-	Id      Identifiers `json:"id"`
-	Version int         `json:"version"`
+	Id       Identifiers `json:"id"`
+	Resource string      `json:"resource"`
+	Version  int         `json:"version"`
 }
 
 // Aspect - the way in which something is viewed by the mind, not to be conflated with what the something has
