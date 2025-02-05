@@ -14,6 +14,9 @@ type Tags string
 type Resource string
 type Timestamp string
 
+// Append
+//
+
 // IAppend - append to the collective
 // TODO: add tags for context and resemblance query support
 //
@@ -42,6 +45,8 @@ var Append = func() *IAppend {
 	}
 }()
 
+// Retrieval
+
 // ThingRequest -
 type ThingRequest struct {
 	Name    Urn
@@ -55,13 +60,17 @@ type ThingResponse struct {
 	Status  *core.Status
 }
 
+type QueryRequest struct {
+	NSID string
+	NSS  string
+}
+
 // IRetrieval -
-// TODO : add a way to query/search list of aspects
-//
-//	add a way to query/search a list of frames
+// TODO : add a way to query/search list of aspects or frames
 type IRetrieval struct {
 	Things func(h core.ErrorHandler, urns []ThingRequest) ([]ThingResponse, *core.Status)
 	Frame  func(h core.ErrorHandler, name Urn, version int) ([]Urn, *core.Status)
+	Query  func(h core.ErrorHandler, req QueryRequest) ([]Urn, *core.Status)
 }
 
 var Retrieve = func() *IRetrieval {
@@ -72,51 +81,42 @@ var Retrieve = func() *IRetrieval {
 		Frame: func(h core.ErrorHandler, name Urn, version int) ([]Urn, *core.Status) {
 			return nil, core.StatusOK()
 		},
+		Query: func(h core.ErrorHandler, req QueryRequest) ([]Urn, *core.Status) {
+			return nil, core.StatusOK()
+		},
 	}
 }()
+
+// Relations
+//
 
 const (
 	RelationNone        = "none"
 	RelationDirect      = "direct"
 	RelationResemblance = "resemblance"
+
+	VersionName = "ver"
+	CompareName = "cmp"
+	TopName     = "top"
+
+	ExistValue    = "exist"
+	NotExistValue = "!exist"
+	LikeValue     = "like"
+	NotLikeValue  = "!like"
 )
 
 type ThingConstraints interface {
-	Urn | Resource | Tags | Timestamp
+	Urn | Resource | Tags
 }
 
-type FilterConstraints interface {
-	[]Urn | Timestamp
+type RelateFilter struct {
+	Urns      []Urn
+	Resources []Resource
+	Tags      Tags
+	From      Timestamp
+	To        Timestamp
 }
 
-func Relate[T ThingConstraints, U FilterConstraints](h core.ErrorHandler, thing1, thing2 T, filter1, filter2 U, values url.Values) (string, Urn, *core.Status) {
-	return RelationNone, "", core.StatusOK()
+func Relate[T ThingConstraints](h core.ErrorHandler, thing1, thing2 T, filter1, filter2 RelateFilter, values url.Values) (string, *core.Status) {
+	return RelationNone, core.StatusOK()
 }
-
-/*
-// IRelate -
-// TODO : Support type names??
-//
-//		Can we add name -> type agreement
-//		Can we doe some sort of heuristic check to see if the name resembles any existing type Urn??
-//	 Modified Urn for things to contain a path and resource, like a Url, and the resource name
-//	 of a Thing can now be verified against other aspects.
-//
-// The thing of type supports
-// Resource - resource name
-// Urn    - thing or aspect name
-// Tags   - list of tag names
-type IRelate struct {
-	Relate func(h core.ErrorHandler, thing any, aspect Urn, values url.Values) (string, *core.Status)
-}
-
-var Retrieve1 = func() *IRelate {
-	return &IRelate{
-		Relate: func(h core.ErrorHandler, thing any, aspect Urn, values url.Values) (string, *core.Status) {
-			return RelationNone, core.StatusOK()
-		},
-	}
-}()
-
-
-*/

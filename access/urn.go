@@ -25,10 +25,3 @@ const (
 	RuleNSS     = "rule"     // urn:agent:rule:testing-rule
 	GuidanceNSS = "guidance" // urn:agent:guidance:testing-rule
 )
-
-const (
-	Version = "ver"
-	Exist   = "exist"
-	Top     = "top"
-	Like    = "like"
-)
